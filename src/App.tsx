@@ -27,7 +27,7 @@ function tick() {
     }
     if (process.env.NODE_ENV === "development") allowTick = false;
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 1; i++) {
         grid?.tick();
     }
 }
