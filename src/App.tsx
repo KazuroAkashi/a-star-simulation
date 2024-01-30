@@ -17,7 +17,7 @@ function render(p5: P5, delta: number) {
     p5.pop();
 }
 
-// HACK: For some reason it ticks twice when mouse clicked
+// HACK: For some reason it ticks twice when mouse clicked in development
 let allowTick = true;
 
 function tick() {
@@ -25,7 +25,7 @@ function tick() {
         allowTick = true;
         return;
     }
-    allowTick = false;
+    if (process.env.NODE_ENV === "development") allowTick = false;
 
     for (let i = 0; i < 20; i++) {
         grid?.tick();
@@ -36,7 +36,7 @@ export default function App() {
     lastTime = Date.now();
 
     const setup = (p5: P5, parent: Element) => {
-        // To avoid double initialization
+        // To avoid double initialization in development
         if (init) return;
         init = true;
 
