@@ -8,19 +8,6 @@ export class GridNode {
 
     constructor(readonly x: number, readonly y: number) {}
 
-    makeStart() {
-        this._type = NodeType.START;
-        this._gCost = 0;
-    }
-
-    makeEnd() {
-        this._type = NodeType.END;
-    }
-
-    makeWall() {
-        this._type = NodeType.WALL;
-    }
-
     isStart() {
         return this._type === NodeType.START;
     }
@@ -45,11 +32,23 @@ export class GridNode {
         return this._type === NodeType.POTENTIAL;
     }
 
-    givesBetterGCostWith(prevNode: GridNode) {
-        return this._gCost > prevNode._gCost + 1;
+    makeStart() {
+        this._type = NodeType.START;
+        this._gCost = 0;
     }
 
-    // Using manhattan distance because we will only move to the sides
+    makeEnd() {
+        this._type = NodeType.END;
+    }
+
+    makeWall() {
+        this._type = NodeType.WALL;
+    }
+
+    makeEmpty() {
+        this._type = NodeType.EMPTY;
+    }
+
     makePotential(prevNode: GridNode, end: GridNode) {
         this.calculateGCost(prevNode);
         this._hCost = this.distanceTo(end);

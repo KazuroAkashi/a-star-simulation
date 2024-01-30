@@ -65,6 +65,41 @@ export class Grid {
         }
     }
 
+    placeWallAt(mouseX: number, mouseY: number) {
+        const node = this.getNode(
+            Math.floor(mouseX / this.nodeSize),
+            Math.floor(mouseY / this.nodeSize)
+        );
+        node.makeWall();
+    }
+    placeStartAt(mouseX: number, mouseY: number) {
+        this.startNode.makeEmpty();
+
+        const node = this.getNode(
+            Math.floor(mouseX / this.nodeSize),
+            Math.floor(mouseY / this.nodeSize)
+        );
+        node.makeStart();
+
+        this.checkedNodes = [];
+
+        this.startNode = node;
+
+        this.checkedNodes.push(node);
+    }
+    placeEndAt(mouseX: number, mouseY: number) {
+        this.endNode.makeEmpty();
+
+        const node = this.getNode(
+            Math.floor(mouseX / this.nodeSize),
+            Math.floor(mouseY / this.nodeSize)
+        );
+        node.makeEnd();
+
+        this.endNode = node;
+        this.backtrackCurrent = this.endNode;
+    }
+
     private potentialNodes: GridNode[] = [];
     private selectedNodes: GridNode[] = [];
     private checkedNodes: GridNode[] = [];

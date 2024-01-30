@@ -32,6 +32,52 @@ function tick() {
     }
 }
 
+enum ToolMode {
+    NONE,
+    WALL,
+    START,
+    END,
+}
+
+let toolMode = ToolMode.NONE;
+let preparing = true;
+
+function keyPressed(p5: P5) {
+    if (p5.keyIsDown(27)) {
+        // Escape key
+        toolMode = ToolMode.NONE;
+    } else if (p5.keyIsDown(87) && preparing) {
+        // W key
+        toolMode = ToolMode.WALL;
+    } else if (p5.keyIsDown(83) && preparing) {
+        // S key
+        toolMode = ToolMode.START;
+    } else if (p5.keyIsDown(69) && preparing) {
+        // E key
+        toolMode = ToolMode.END;
+    } else if (p5.keyIsDown(13)) {
+        // Enter key
+        toolMode = ToolMode.NONE;
+        preparing = false;
+        tick();
+    } else if (p5.keyIsDown(32)) {
+        // Space key
+        // Reset board
+        grid = new Grid(40);
+        preparing = true;
+    }
+}
+
+function mouseClicked(p5: P5) {
+    if (toolMode === ToolMode.WALL) {
+        grid.placeWallAt(p5.mouseX, p5.mouseY);
+    } else if (toolMode === ToolMode.START) {
+        grid.placeStartAt(p5.mouseX, p5.mouseY);
+    } else if (toolMode === ToolMode.END) {
+        grid.placeEndAt(p5.mouseX, p5.mouseY);
+    }
+}
+
 export default function App() {
     lastTime = Date.now();
 
@@ -57,5 +103,13 @@ export default function App() {
         lastTime = now;
     };
 
-    return <Sketch setup={setup} draw={draw} mouseClicked={tick}></Sketch>;
+    return (
+        <Sketch
+            setup={setup}
+            draw={draw}
+            mouseClicked={mouseClicked}
+            mouseDragged={mouseClicked}
+            keyPressed={keyPressed}
+        ></Sketch>
+    );
 }
