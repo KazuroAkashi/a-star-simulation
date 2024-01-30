@@ -1,22 +1,35 @@
-import React from "react";
 import Sketch from "react-p5";
 import type P5 from "p5";
+import { Grid } from "./lib/Grid";
 
 let init = false;
 
 let lastTime: number;
 let now: number;
 
-let ox = 0;
-let oy = 0;
-
 let canvas: P5.Renderer;
+
+let grid: Grid;
 
 function render(p5: P5, delta: number) {
     p5.push();
-    p5.translate(1000 * delta, 0);
-    p5.ellipse(0, 0, 50);
+    grid.render(p5, delta);
     p5.pop();
+}
+
+// HACK: For some reason it ticks twice when mouse clicked
+let allowTick = true;
+
+function tick() {
+    if (!allowTick) {
+        allowTick = true;
+        return;
+    }
+    allowTick = false;
+
+    for (let i = 0; i < 20; i++) {
+        grid?.tick();
+    }
 }
 
 export default function App() {
@@ -27,28 +40,22 @@ export default function App() {
         if (init) return;
         init = true;
 
-        ox = p5.displayWidth / 2;
-        oy = p5.displayHeight / 2;
-
         canvas = p5
-            .createCanvas(p5.displayWidth, p5.displayHeight)
-            .position(-ox + p5.windowWidth / 2, -oy + p5.windowHeight / 2)
+            .createCanvas(p5.windowWidth, p5.windowHeight)
+            .position(0, 0)
             .parent(parent);
+
+        grid = new Grid(40);
     };
 
     const draw = (p5: P5) => {
         p5.clear();
         p5.background(0);
-        p5.translate(ox, oy);
-
-        p5.ellipse(0, 0, 50);
 
         now = Date.now();
         render(p5, (now - lastTime) / 1000);
         lastTime = now;
-
-        p5.translate(-ox, -oy);
     };
 
-    return <Sketch setup={setup} draw={draw}></Sketch>;
+    return <Sketch setup={setup} draw={draw} mouseClicked={tick}></Sketch>;
 }
